@@ -4,46 +4,46 @@
 
 1. Создайте и войдите в виртуальное окружение
 
-- windows
+   - windows
 
-```
-python -m venv venv
-venv/Scripts/activate
-```
+     ```
+     python -m venv venv
+     venv/Scripts/activate
+     ```
 
-- linux
+   - linux
 
-```
-python3 -m venv venv
-source venv/bin/activate
-```
+     ```
+     python3 -m venv venv
+     source venv/bin/activate
+     ```
 
 2. Установите зависимости пакетного менеджера
 
-```sh
-pip install -r requirements.txt
-```
+   ```sh
+   pip install -r requirements.txt
+   ```
 
 3. Скопируйте `.env.example` в `.env`
 
-```sh
-cp .env.example .env
-```
+   ```sh
+   cp .env.example .env
+   ```
 
 4. Запустите сторонние зависимости
 
-```sh
-docker compose -f docker-compose-dev.yaml up -d
-```
+   ```sh
+   docker compose -f docker-compose-dev.yaml up -d
+   ```
 
 5. Примените миграции
 
-```sh
-python manage.py migrate
-```
+   ```sh
+   python manage.py migrate
+   ```
 
 6. Запустите сервер
 
-```sh
-python manage.py runserver
-```
+   ```sh
+   python manage.py runserver
+   ```
