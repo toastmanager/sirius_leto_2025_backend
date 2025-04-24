@@ -78,7 +78,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ["full_name", "email", "groups"]
+        fields = ["id", "full_name", "email", "groups"]
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):

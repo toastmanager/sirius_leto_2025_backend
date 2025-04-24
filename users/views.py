@@ -54,3 +54,15 @@ class UserRegisterView(generics.CreateAPIView):
         return Response(
             response_serializer.data, status=status.HTTP_201_CREATED, headers=headers
         )
+
+
+class CurrentUserView(generics.GenericAPIView):  # Or inherit from APIView
+    permission_classes = [permissions.IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get(self, request, *args, **kwargs):
+        """
+        Determine the current user by their token, and return their data
+        """
+        serializer = self.get_serializer(request.user)
+        return Response(serializer.data)
