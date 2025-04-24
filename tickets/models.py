@@ -30,6 +30,19 @@ class TicketType(models.Model):
         return self.title
 
 
+class TicketGroup(models.Model):
+    title = models.CharField(max_length=255)
+    created_on = models.DateTimeField(auto_now_add=True)
+    last_created_on = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Группа заявок"
+        verbose_name_plural = "Группы заявок"
+
+    def __str__(self):
+        return self.title
+
+
 class Ticket(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
@@ -41,6 +54,9 @@ class Ticket(models.Model):
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    group = models.ForeignKey(
+        TicketGroup, on_delete=models.CASCADE, related_name="tickets"
+    )
 
     class Meta:
         verbose_name = "Заявка"
