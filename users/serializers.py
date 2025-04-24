@@ -78,10 +78,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ["url", "full_name", "email", "groups"]
+        fields = ["full_name", "email", "groups"]
 
 
 class GroupSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Group
-        fields = ["url", "name"]
+        fields = ["name"]
