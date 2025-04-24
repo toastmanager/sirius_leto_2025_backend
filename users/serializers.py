@@ -16,16 +16,10 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         style={"input_type": "password"},
         validators=[validate_password],  # Use Django's password validators
     )
-    password2 = serializers.CharField(
-        write_only=True,
-        required=True,
-        label="Confirm password",
-        style={"input_type": "password"},
-    )
 
     class Meta:
         model = User
-        fields = ("email", "full_name", "password", "password2")
+        fields = ("email", "full_name", "password")
         extra_kwargs = {"full_name": {"required": True}, "email": {"required": True}}
 
     def validate_email(self, value):
@@ -38,31 +32,11 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("A user with that email already exists.")
         return normalized_email  # Return normalized email
 
-    def validate(self, attrs):
-        """
-        Check that the two password entries match.
-        """
-        if attrs["password"] != attrs["password2"]:
-            raise serializers.ValidationError(
-                {"password": "Password fields didn't match."}
-            )
-        # Password validation via validators=[validate_password] happens automatically
-        # by DRF field validation if validators are specified on the field.
-        # If you wanted to run them here manually (e.g., if not set on the field):
-        # try:
-        #     validate_password(attrs['password'])
-        # except DjangoValidationError as e:
-        #     raise serializers.ValidationError({'password': list(e.messages)})
-
-        return attrs
-
     def create(self, validated_data):
         """
         Create and return a new user instance, given the validated data.
         Uses the custom user manager's create_user method.
         """
-        # Remove the confirmation password field as it's not part of the User model
-        validated_data.pop("password2")
         # Extract the password to pass separately to create_user
         password = validated_data.pop("password")
 
