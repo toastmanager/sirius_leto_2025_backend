@@ -44,6 +44,18 @@ class TicketGroup(models.Model):
 
 
 class Ticket(models.Model):
+    STATUS_PENDING_REVIEW = "PENDING_REVIEW"
+    STATUS_IN_PROGRESS = "IN_PROGRESS"
+    STATUS_COMPLETED = "COMPLETED"
+    STATUS_REJECTED = "REJECTED"
+
+    STATUS_CHOICES = (
+        (STATUS_PENDING_REVIEW, "Принята на рассмотрение"),
+        (STATUS_IN_PROGRESS, "Работы ведутся"),
+        (STATUS_COMPLETED, "Работы завершены"),
+        (STATUS_REJECTED, "Отказано"),
+    )
+
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True)
     type = models.ForeignKey(
@@ -56,6 +68,12 @@ class Ticket(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     group = models.ForeignKey(
         TicketGroup, on_delete=models.CASCADE, related_name="tickets"
+    )
+    status = models.CharField(
+        max_length=20,
+        choices=STATUS_CHOICES,
+        default=STATUS_PENDING_REVIEW,
+        verbose_name="Статус",
     )
 
     class Meta:
