@@ -40,6 +40,7 @@ class Ticket(models.Model):
         srid=4326, null=False, help_text="Geographic location (longitude, latitude)"
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         verbose_name = "Заявка"

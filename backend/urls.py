@@ -7,6 +7,7 @@ from rest_framework_simplejwt.views import (
 )
 
 from users.urls import router as users_router
+from tickets.views import TicketDetailView, TicketListView
 from users.views import UserRegisterView
 
 router = routers.DefaultRouter()
@@ -18,5 +19,7 @@ urlpatterns = [
     path("auth/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("auth/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("auth/register/", UserRegisterView.as_view(), name="user_register"),
+    path("tickets/", TicketListView.as_view(), name="ticket-list"),
+    path("tickets/<int:pk>/", TicketDetailView.as_view(), name="ticket-detail"),
     path("", include(router.urls)),
 ]
