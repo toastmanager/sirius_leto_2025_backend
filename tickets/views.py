@@ -1,5 +1,6 @@
 from django.contrib.gis.db.models.functions import Distance
 from django.contrib.gis.measure import D
+from django.utils.timezone import now
 
 from rest_framework import permissions, generics
 
@@ -41,6 +42,10 @@ class TicketListView(generics.ListCreateAPIView):
             .first()
         )
         if nearby_ticket:
+            current_time = now()
+            existing_group = nearby_ticket.group
+            existing_group.last_created_on = current_time
+            existing_group.save(update_fields=["last_created_on"])
             serializer.save(user=self.request.user, group=nearby_ticket.group)
         else:
             group = TicketGroup.objects.create(

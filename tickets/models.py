@@ -1,12 +1,12 @@
 from django.db import models
 from django.contrib.gis.db import models as gis_models
-from django.contrib.auth import get_user_model
 
-User = get_user_model()
+from users.models import User
 
 
 class TicketCategory(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, verbose_name="Название")
+    # TODO: add ticket category priority score [from 1 to 10]
 
     class Meta:
         verbose_name = "Категория заявки"
@@ -17,10 +17,11 @@ class TicketCategory(models.Model):
 
 
 class TicketType(models.Model):
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, verbose_name="Название")
     category = models.ForeignKey(
         TicketCategory, on_delete=models.CASCADE, related_name="types"
     )
+    # TODO: add ticket type priority score [from 1 to 10]
 
     class Meta:
         verbose_name = "Тип заявки"
@@ -31,13 +32,26 @@ class TicketType(models.Model):
 
 
 class TicketGroup(models.Model):
-    title = models.CharField(max_length=255)
-    created_on = models.DateTimeField(auto_now_add=True)
-    last_created_on = models.DateTimeField(auto_now_add=True)
+    title = models.CharField(max_length=255, verbose_name="Название")
+    created_on = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    last_created_on = models.DateTimeField(
+        auto_now_add=True, verbose_name="Дата создания последней заявки"
+    )
+    # TODO: add ticket group status
 
     class Meta:
         verbose_name = "Группа заявок"
         verbose_name_plural = "Группы заявок"
+
+    @property
+    def priority(self) -> int:
+        # TODO: Complete this function to take into account the priority scores of types and categories.
+        days_diff = (self.last_created_on - self.created_on).days
+        ticket_count = self.tickets.count()  # type: ignore
+        calculated_priority = (1 + days_diff) * ticket_count
+        return calculated_priority
+
+    priority.fget.short_description = "Приоритет"  # type: ignore
 
     def __str__(self):
         return self.title
@@ -56,18 +70,24 @@ class Ticket(models.Model):
         (STATUS_REJECTED, "Отказано"),
     )
 
-    title = models.CharField(max_length=255)
-    description = models.TextField(blank=True)
+    title = models.CharField(max_length=255, verbose_name="Название")
+    description = models.TextField(blank=True, verbose_name="Описание")
     type = models.ForeignKey(
-        TicketType, on_delete=models.CASCADE, related_name="tickets"
+        TicketType, on_delete=models.CASCADE, related_name="tickets", verbose_name="Тип"
     )
     location = gis_models.PointField(
-        srid=4326, null=False, help_text="Geographic location (longitude, latitude)"
+        srid=4326,
+        null=False,
+        help_text="Geographic location (longitude, latitude)",
+        verbose_name="Координаты",
     )
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     group = models.ForeignKey(
-        TicketGroup, on_delete=models.CASCADE, related_name="tickets"
+        TicketGroup,
+        on_delete=models.CASCADE,
+        related_name="tickets",
+        verbose_name="Группа",
     )
     status = models.CharField(
         max_length=20,

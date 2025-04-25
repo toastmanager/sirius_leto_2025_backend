@@ -50,7 +50,7 @@ class TicketSerializer(serializers.ModelSerializer):
             "type",
             "type_id",
         )
-        read_only_fields = ("user", "created_at", "type")
+        read_only_fields = ("user", "status", "created_at", "type")
 
     def validate(self, data):
         """
