@@ -2,7 +2,11 @@ from django.contrib import admin
 from django.urls import path, include
 from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
-from users.urls import users_urlpatterns, auth_urlpatterns
+from patches import routers
+from users.urls import auth_urlpatterns, router as users_router
+
+router = routers.DefaultRouter()
+router.extend(users_router)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
@@ -14,6 +18,6 @@ urlpatterns = [
     ),
     path("api-auth/", include("rest_framework.urls", namespace="rest_framework")),
     path("tickets/", include("tickets.urls", namespace="tickets")),
-    path("users/", include((users_urlpatterns, "users"), namespace="users")),
     path("auth/", include((auth_urlpatterns, "auth"), namespace="auth")),
+    path("", include(router.urls)),
 ]

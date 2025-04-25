@@ -1,4 +1,4 @@
-from django.urls import path, include
+from django.urls import path
 from rest_framework import routers
 from rest_framework_simplejwt.views import (
     TokenObtainPairView,
@@ -7,13 +7,9 @@ from rest_framework_simplejwt.views import (
 
 from . import views
 
-router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 router.register(r"users", views.UserViewSet)
 router.register(r"groups", views.GroupViewSet)
-
-users_urlpatterns = [
-    path("", include(router.urls)),
-]
 
 auth_urlpatterns = [
     path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
