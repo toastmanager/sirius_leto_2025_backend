@@ -1,13 +1,20 @@
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.contrib.auth.admin import (
+    UserAdmin as BaseUserAdmin,
+    GroupAdmin as BaseGroupAdmin,
+)
 from django.utils.translation import gettext_lazy as _
+from django.contrib.auth.models import Group
+from unfold.admin import ModelAdmin
 
 from .models import User
 from .forms import CustomUserCreationForm, CustomUserChangeForm
 
+admin.site.unregister(Group)
+
 
 @admin.register(User)
-class UserAdmin(BaseUserAdmin):
+class UserAdmin(BaseUserAdmin, ModelAdmin):
     """
     Define the admin pages for the custom User model.
     """
@@ -66,3 +73,8 @@ class UserAdmin(BaseUserAdmin):
 
     # Use email as the primary identifier in admin views
     list_display_links = ("email",)
+
+
+@admin.register(Group)
+class GroupAdmin(BaseGroupAdmin, ModelAdmin):
+    pass
