@@ -1,26 +1,45 @@
 from django.contrib import admin
+from django.db import models
+from unfold.admin import ModelAdmin, TabularInline
+from unfold.contrib.forms.widgets import WysiwygWidget
 
 from .models import Ticket, TicketCategory, TicketType, TicketGroup
 from .forms import TicketForm
 
 
-class TicketAdmin(admin.ModelAdmin):
+@admin.register(Ticket)
+class TicketAdmin(ModelAdmin):
     form = TicketForm
+    formfield_overrides = {
+        models.TextField: {
+            "widget": WysiwygWidget,
+        },
+    }
 
 
-class TicketInline(admin.TabularInline):
+class TicketInline(TabularInline):
     form = TicketForm
     model = Ticket
     extra = 0
 
 
-class TicketGroupAdmin(admin.ModelAdmin):
+@admin.register(TicketGroup)
+class TicketGroupAdmin(ModelAdmin):
     inlines = [
         TicketInline,
     ]
 
 
-admin.site.register(Ticket, TicketAdmin)
-admin.site.register(TicketGroup, TicketGroupAdmin)
-admin.site.register(TicketCategory)
-admin.site.register(TicketType)
+class TicketTypeInline(TabularInline):
+    model = TicketType
+    extra = 0
+
+
+@admin.register(TicketCategory)
+class TicketCategoryAdmin(ModelAdmin):
+    inlines = [TicketTypeInline]
+
+
+@admin.register(TicketType)
+class TicketTypeAdmin(ModelAdmin):
+    pass
