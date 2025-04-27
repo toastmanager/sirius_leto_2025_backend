@@ -64,6 +64,7 @@ INSTALLED_APPS = [
     "tickets",
     "drf_spectacular",
     "drf_spectacular_sidecar",
+    "news"
 ]
 
 MIDDLEWARE = [
