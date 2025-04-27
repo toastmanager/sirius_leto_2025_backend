@@ -31,7 +31,7 @@ class Article(models.Model):
     content = models.TextField(verbose_name=_("Содержание"))
     excerpt = models.CharField(blank=True,max_length=500,verbose_name=_("Краткое описание"))
     
-    autors = models.ForeignKey(
+    author = models.ForeignKey(
         User, 
         on_delete=models.CASCADE,
         related_name="news_articles",
