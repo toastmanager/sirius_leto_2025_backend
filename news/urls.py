@@ -1,18 +1,9 @@
-from rest_framework.routers import DefaultRouter
-from django.urls import path, include
+from rest_framework.routers import SimpleRouter
 from news.views import (
-    NewsCategoryViewSet,
     NewsTagViewSet,
-    NewsCollectionViewSet,
-    NewsArticleViewSet
+    ArticleViewSet
 )
 
-router = DefaultRouter()
-router.register(r'news-categories', NewsCategoryViewSet)
+router = SimpleRouter()
 router.register(r'news-tags', NewsTagViewSet)
-router.register(r'news-collections', NewsCollectionViewSet)
-router.register(r'news-articles', NewsArticleViewSet)
-
-urlpatterns = [
-    path('api/', include(router.urls)),
-]
+router.register(r'news-articles', ArticleViewSet)
