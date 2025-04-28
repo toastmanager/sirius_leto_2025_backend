@@ -52,6 +52,7 @@ class TicketGroupAdmin(ModelAdmin):
     inlines = [
         TicketInline,
     ]
+    pass
 
 
 class TicketTypeInline(TabularInline):

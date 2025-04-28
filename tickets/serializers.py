@@ -23,7 +23,7 @@ class TicketTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = TicketType
-        fields = ("id", "title", "category", "category_id")
+        fields = ("id", "title", "category", "score", "category_id")
         read_only_fields = ("category_id",)
 
 
