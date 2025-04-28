@@ -9,13 +9,36 @@ from users.serializers import UserSerializer
 class TicketCategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketCategory
-        fields = "__all__"
+        fields = ("id", "title", "score")
+
+
+class TicketTypeWithCategorySerializer(serializers.ModelSerializer):
+    category = TicketCategorySerializer(read_only=True)
+    category_id = serializers.PrimaryKeyRelatedField(
+        queryset=TicketCategory.objects.all(),
+        write_only=True,
+        required=True,
+        source="category",
+    )
+
+    class Meta:
+        model = TicketType
+        fields = ("id", "title", "category", "score", "category_id")
+        read_only_fields = ("category_id",)
 
 
 class TicketTypeSerializer(serializers.ModelSerializer):
     class Meta:
         model = TicketType
         fields = "__all__"
+
+
+class TicketCategoryDetailsSerializer(serializers.ModelSerializer):
+    types = TicketTypeSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = TicketCategory
+        fields = ("id", "title", "score", "types")
 
 
 class TicketSerializer(serializers.ModelSerializer):
@@ -31,7 +54,7 @@ class TicketSerializer(serializers.ModelSerializer):
     )
 
     user = UserSerializer(read_only=True)
-    type = TicketTypeSerializer(read_only=True)
+    type = TicketTypeWithCategorySerializer(read_only=True)
     type_id = serializers.PrimaryKeyRelatedField(
         queryset=TicketType.objects.all(), write_only=True, required=True, source="type"
     )
@@ -41,12 +64,14 @@ class TicketSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "latitude",
+            "address",
             "longitude",
             "user",
             "title",
             "description",
             "created_at",
             "status",
+            "image",
             "type",
             "type_id",
         )

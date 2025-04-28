@@ -1,12 +1,15 @@
 from django.db import models
 from django.contrib.gis.db import models as gis_models
+from django.core.validators import MaxValueValidator, MinValueValidator
 
 from users.models import User
 
 
 class TicketCategory(models.Model):
     title = models.CharField(max_length=100, verbose_name="Название")
-    # TODO: add ticket category priority score [from 1 to 10]
+    score = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(10)]
+    )
 
     class Meta:
         verbose_name = "Категория заявки"
@@ -21,7 +24,9 @@ class TicketType(models.Model):
     category = models.ForeignKey(
         TicketCategory, on_delete=models.CASCADE, related_name="types"
     )
-    # TODO: add ticket type priority score [from 1 to 10]
+    score = models.IntegerField(
+        validators=[MinValueValidator(1), MaxValueValidator(10)]
+    )
 
     class Meta:
         verbose_name = "Тип заявки"
@@ -45,10 +50,13 @@ class TicketGroup(models.Model):
 
     @property
     def priority(self) -> int:
-        # TODO: Complete this function to take into account the priority scores of types and categories.
-        days_diff = (self.last_created_on - self.created_on).days
-        ticket_count = self.tickets.count()  # type: ignore
-        calculated_priority = (1 + days_diff) * ticket_count
+        days_diff: int = (self.last_created_on - self.created_on).days
+        ticket_count: int = self.tickets.count()  # type: ignore
+        type: TicketType = self.tickets.first().type  # type: ignore
+        category: TicketCategory = type.category  # type: ignore
+        calculated_priority: int = (
+            category.score * type.score + days_diff
+        ) * ticket_count
         return calculated_priority
 
     priority.fget.short_description = "Приоритет"  # type: ignore
@@ -95,6 +103,8 @@ class Ticket(models.Model):
         default=STATUS_PENDING_REVIEW,
         verbose_name="Статус",
     )
+    address = models.CharField(max_length=255, verbose_name="Адрес")
+    image = models.ImageField(null=True)
 
     class Meta:
         verbose_name = "Заявка"
