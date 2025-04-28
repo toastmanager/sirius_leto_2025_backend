@@ -13,9 +13,18 @@ class TicketCategorySerializer(serializers.ModelSerializer):
 
 
 class TicketTypeSerializer(serializers.ModelSerializer):
+    category = TicketCategorySerializer(read_only=True)
+    category_id = serializers.PrimaryKeyRelatedField(
+        queryset=TicketCategory.objects.all(),
+        write_only=True,
+        required=True,
+        source="category",
+    )
+
     class Meta:
         model = TicketType
-        fields = "__all__"
+        fields = ("id", "title", "category", "category_id")
+        read_only_fields = ("category_id",)
 
 
 class TicketSerializer(serializers.ModelSerializer):
