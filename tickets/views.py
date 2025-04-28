@@ -3,10 +3,16 @@ from django.contrib.gis.measure import D
 from django.utils.timezone import now
 
 from rest_framework import permissions, generics
+from rest_framework import viewsets
 
-from .serializers import TicketSerializer
+from .serializers import (
+    TicketSerializer,
+    TicketCategorySerializer,
+    TicketTypeWithCategorySerializer,
+    TicketCategoryDetailsSerializer,
+)
 from .permissions import OwnTicketPermission
-from .models import Ticket, TicketGroup
+from .models import Ticket, TicketGroup, TicketCategory, TicketType
 
 
 import logging
@@ -61,3 +67,18 @@ class TicketDetailView(generics.RetrieveUpdateDestroyAPIView):
         OwnTicketPermission,
     ]
     queryset = Ticket.objects.all()
+
+
+class TicketTypeViewSet(viewsets.ModelViewSet):
+    queryset = TicketType.objects.all().order_by("title")
+    serializer_class = TicketTypeWithCategorySerializer
+
+
+class TicketCategoryListView(generics.ListCreateAPIView):
+    queryset = TicketCategory.objects.all().order_by("title")
+    serializer_class = TicketCategorySerializer
+
+
+class TicketCategoryDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = TicketCategory.objects.all()
+    serializer_class = TicketCategoryDetailsSerializer

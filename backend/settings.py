@@ -64,7 +64,7 @@ INSTALLED_APPS = [
     "tickets",
     "drf_spectacular",
     "drf_spectacular_sidecar",
-    "news"
+    "news",
 ]
 
 MIDDLEWARE = [
@@ -204,9 +204,15 @@ SPECTACULAR_SETTINGS = {
 }
 
 STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
     "staticfiles": {
         "BACKEND": "servestatic.storage.CompressedManifestStaticFilesStorage",
     },
 }
 
 UNFOLD = {"SITE_HEADER": "Админ панель"}
+
+MEDIA_ROOT = BASE_DIR / "media/"
+MEDIA_URL = "media/"

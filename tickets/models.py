@@ -104,6 +104,7 @@ class Ticket(models.Model):
         verbose_name="Статус",
     )
     address = models.CharField(max_length=255, verbose_name="Адрес")
+    image = models.ImageField(null=True)
 
     class Meta:
         verbose_name = "Заявка"
