@@ -1,7 +1,8 @@
 from django.contrib import admin
-from django.db import models
+
+# from django.db import models
 from unfold.admin import ModelAdmin, TabularInline
-from unfold.contrib.forms.widgets import WysiwygWidget
+# from unfold.contrib.forms.widgets import WysiwygWidget
 
 from .models import Ticket, TicketCategory, TicketType, TicketGroup
 from .forms import TicketForm
@@ -19,11 +20,11 @@ class TicketAdmin(ModelAdmin):
         "author_full_name",
     ]
     search_fields = ["id", "title"]
-    formfield_overrides = {
-        models.TextField: {
-            "widget": WysiwygWidget,
-        },
-    }
+    # formfield_overrides = {
+    #     models.TextField: {
+    #         "widget": WysiwygWidget,
+    #     },
+    # }
 
     @admin.display(description="Категория заявки")
     def category_title(self, ticket: Ticket) -> str:

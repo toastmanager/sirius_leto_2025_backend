@@ -95,6 +95,7 @@ class Ticket(models.Model):
         default=STATUS_PENDING_REVIEW,
         verbose_name="Статус",
     )
+    address = models.CharField(max_length=255, verbose_name="Адрес")
 
     class Meta:
         verbose_name = "Заявка"

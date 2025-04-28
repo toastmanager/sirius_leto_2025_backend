@@ -50,6 +50,7 @@ class TicketSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "latitude",
+            "address",
             "longitude",
             "user",
             "title",
