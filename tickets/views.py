@@ -38,6 +38,7 @@ class TicketListView(generics.ListCreateAPIView):
 
     def perform_create(self, serializer):
         location = serializer.validated_data.get("location")
+        address = serializer.validated_data.get("address")
         type = serializer.validated_data.get("type")
         nearby_ticket = (
             Ticket.objects.filter(
@@ -54,9 +55,7 @@ class TicketListView(generics.ListCreateAPIView):
             existing_group.save(update_fields=["last_created_on"])
             serializer.save(user=self.request.user, group=nearby_ticket.group)
         else:
-            group = TicketGroup.objects.create(
-                title=f"{location.x} {location.y} {type}"
-            )
+            group = TicketGroup.objects.create(title=f"{address} - {type}")
             serializer.save(user=self.request.user, group=group)
 
 
